@@ -14,6 +14,23 @@ public float jumpPower = 8f;
 
 void Start()
   {
+      void Start()
+  {
+
+    if (hp >= 70)
+    {
+      Debug.Log("건강");
+    }
+    else if (hp >= 30)
+    {
+      Debug.Log("주의");
+    }
+    else if (hp>=10)
+    {
+      Debug.Log("위험");
+    }
+  }
+
     rb = GetComponent<Rigidbody2D>();
 Debug.Log(playerName + "시작.체력" + hp);
 Debug.Log("피격 후 체력" + (hp - 30));

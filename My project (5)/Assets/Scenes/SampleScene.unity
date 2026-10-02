@@ -1771,7 +1771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   playerName: "\uCE74\uB808"
-  hp: 50
+  hp: 70
   moveSpeed: 5
   visual: {fileID: 1335747503}
   jumpPower: 8
