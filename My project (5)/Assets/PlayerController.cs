@@ -1,42 +1,33 @@
 using UnityEngine;
+using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
  
 public class PlayerController : MonoBehaviour
 {
 
- public string playerName = "Player";
- public int hp = 100;
-    public int lives = 3;
-    public float moveSpeed = 5f;
- public Transform visual;
-    public Vector2 airScale = new Vector2(0.8f, 1.2f);
-    private Vector2 moveInput;
+public string playerName = "Player";
+public int hp = 100;
+public int lives = 3;
+public float moveSpeed = 5f;
+public Transform visual;
+public Vector2 airScale = new Vector2(0.8f, 1.2f);
+private Vector2 moveInput;
 public float jumpPower = 8f;
-    public float fallLimit = -10f;
-    public Vector3 startPosition;
-    private Rigidbody2D rb;
-    private bool isGrounded = false;
-    private bool isGameOver = false;
-    private float facing = 1f;
+public float fallLimit = -10f;
+public Vector3 startPosition;
+public GameObject gameOverPanel;
+public TMP_Text livesText;
+public string nextSceneName = "Stage2";
+private Rigidbody2D rb;
+private bool isGrounded = false;
+private bool isGameOver = false;
+private float facing = 1f;
 
     void Start()
   {
   
-  //{
-
-  //  //if (hp >= 70)
-  //  {
-  //    Debug.Log("건강");
-  //  }
-  //  //else if (hp >= 30)
-  //  {
-  //    Debug.Log("주의");
-  //  }
-  //  //else if (hp >= 10)
-  //  {
-  //    Debug.Log("위험");
-  //  }
-  //}  
+ 
     rb = GetComponent<Rigidbody2D>();
         transform.position = startPosition;
 
@@ -86,20 +77,8 @@ rb.linearVelocity=new Vector2(rb.linearVelocity.x,jumpPower);
 
         if (transform.position.y < fallLimit)
         {
-            lives -= 1;
-
-            transform.position = startPosition;
-            rb.linearVelocity = Vector2.zero;
-
-            Debug.Log("낙사. 남은 목숨 " + lives);
-
-            if (lives <= 0)
-            {
-                isGameOver = true;
-                Debug.Log("게임 오버");
-            }
+            Loselife();
         }
-
         if (isGrounded)
         {
             visual.localScale = new Vector3(facing, 1f, 1f);
@@ -123,7 +102,7 @@ rb.linearVelocity=new Vector2(rb.linearVelocity.x,jumpPower);
             //Debug.Log("착지");
         }
     }
-
+    
     void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -133,4 +112,35 @@ rb.linearVelocity=new Vector2(rb.linearVelocity.x,jumpPower);
         }
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    
+    {
+        if(other.CompareTag("Goal"))
+        {
+            SceneManager.LoadScene(nextSceneName);
+        }
+        
+        else if (other.CompareTag("trap"))
+        {
+            Loselife();
+        }
+    }    
+     
+     void Loselife()
+    {
+        lives -= 1;
+
+        transform.position = startPosition;
+        rb.linearVelocity = Vector2.zero;
+
+        Debug.Log("낙사. 남은 목숨 " + lives);
+
+        if (lives <= 0)
+        {
+            isGameOver = true;
+            gameOverPanel.SetActive(true);
+        }
+    }
+
+    
 }
