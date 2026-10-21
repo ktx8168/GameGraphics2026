@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
 
 public string playerName = "Player";
 public int hp = 100;
-public int lives = 3;
+private const int StartingLives = 3;
+public int lives = StartingLives;
 public float moveSpeed = 5f;
 public Transform visual;
 public Vector2 airScale = new Vector2(0.8f, 1.2f);
@@ -18,10 +19,14 @@ public float fallLimit = -10f;
 public Vector3 startPosition;
 public GameObject gameOverPanel;
 public TMP_Text livesText;
+public GameObject heart1;
+public GameObject heart2;
+public GameObject heart3;
 public string nextSceneName = "Stage2";
 private Rigidbody2D rb;
 private bool isGrounded = false;
 private bool isGameOver = false;
+private int lastLifeLostFrame = -1;
 private float facing = 1f;
 
     void Start()
@@ -30,6 +35,10 @@ private float facing = 1f;
  
     rb = GetComponent<Rigidbody2D>();
         transform.position = startPosition;
+        lives = StartingLives;
+        isGameOver = false;
+        gameOverPanel.SetActive(false);
+        UpdateLivesText();
 
         Debug.Log(playerName + "시작.체력" + hp);
         Debug.Log("피격 후 체력" + (hp - 30));
@@ -68,6 +77,11 @@ rb.linearVelocity=new Vector2(rb.linearVelocity.x,jumpPower);
 
     void Update()
     {
+        if (isGameOver)
+        {
+            return;
+        }
+
         if (!isGameOver)
         {
             transform.Translate(
@@ -77,7 +91,7 @@ rb.linearVelocity=new Vector2(rb.linearVelocity.x,jumpPower);
 
         if (transform.position.y < fallLimit)
         {
-            Loselife();
+            LoseLife();
         }
         if (isGrounded)
         {
@@ -115,32 +129,91 @@ rb.linearVelocity=new Vector2(rb.linearVelocity.x,jumpPower);
     void OnTriggerEnter2D(Collider2D other)
     
     {
+        if (isGameOver)
+        {
+            return;
+        }
+
         if(other.CompareTag("Goal"))
         {
             SceneManager.LoadScene(nextSceneName);
         }
         
-        else if (other.CompareTag("trap"))
+        else if (other.CompareTag("Trap"))
         {
-            Loselife();
+            LoseLife();
         }
     }    
      
-     void Loselife()
+     void LoseLife()
     {
-        lives -= 1;
+        // A fall and overlapping traps in the same frame count as one death.
+        if (isGameOver || lastLifeLostFrame == Time.frameCount)
+        {
+            return;
+        }
+
+        lastLifeLostFrame = Time.frameCount;
+        lives = Mathf.Max(0, lives - 1);
+        UpdateLivesText();
 
         transform.position = startPosition;
         rb.linearVelocity = Vector2.zero;
+        isGrounded = false;
 
         Debug.Log("낙사. 남은 목숨 " + lives);
 
         if (lives <= 0)
         {
             isGameOver = true;
+            moveInput = Vector2.zero;
             gameOverPanel.SetActive(true);
         }
     }
 
+    void UpdateLivesText()
+    {
+        // LIFE 숫자 대신 하트 이미지로 목숨을 표시합니다.
+        if (livesText != null)
+        {
+            livesText.gameObject.SetActive(false);
+        }
+
+        if (heart1 != null)
+        {
+            if (lives >= 1)
+            {
+                heart1.SetActive(true);
+            }
+            else
+            {
+                heart1.SetActive(false);
+            }
+        }
+
+        if (heart2 != null)
+        {
+            if (lives >= 2)
+            {
+                heart2.SetActive(true);
+            }
+            else
+            {
+                heart2.SetActive(false);
+            }
+        }
+
+        if (heart3 != null)
+        {
+            if (lives >= 3)
+            {
+                heart3.SetActive(true);
+            }
+            else
+            {
+                heart3.SetActive(false);
+            }
+        }
+    }
     
 }
