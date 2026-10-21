@@ -2663,7 +2663,7 @@ GameObject:
   - component: {fileID: 1550908024}
   - component: {fileID: 1550908023}
   m_Layer: 5
-  m_Name: FallCaptionImage
+  m_Name: "\uAC00\uC790!"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
