@@ -2247,7 +2247,7 @@ MonoBehaviour:
   heart1: {fileID: 1257671065}
   heart2: {fileID: 1092076090}
   heart3: {fileID: 1986247497}
-  nextSceneName: Fall_Cloth
+  nextSceneName: "\uB6F0\uC5B4\uB4E4\uAE30"
 --- !u!1 &879299186
 GameObject:
   m_ObjectHideFlags: 0
